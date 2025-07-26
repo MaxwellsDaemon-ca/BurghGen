@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mapeditor/tiled-api": "^1.11.0",
+    "fast-xml-parser": "^5.2.5",
     "pixi.js": "^7.3.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tiled-tmx-parser": "^1.6.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

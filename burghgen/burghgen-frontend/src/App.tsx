@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import TileRenderer from './components/TileRenderer';
 import type { TerrainTile } from './types/TerrainTile';
 
+
+
 /**
  * The main UI component for rendering and interacting with the BurghGen map.
  * 
@@ -9,7 +11,7 @@ import type { TerrainTile } from './types/TerrainTile';
  * - Seed and type selection for procedural map generation
  * - Adjustable map size
  * - Zoom and pan support
- * - PixiJS-based tile rendering
+ * - PixiJS-based tile renderings
  */
 function App() {
   const [tiles, setTiles] = useState<TerrainTile[]>([]);
@@ -22,7 +24,7 @@ function App() {
   const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
   const [scrollStart, setScrollStart] = useState<{ left: number; top: number } | null>(null);
 
-  const TILE_SIZE = 16;
+  const TILE_SIZE = 32;
   const MIN_ZOOM = 0.25;
   const viewportRef = useRef<HTMLDivElement>(null);
 
@@ -206,7 +208,7 @@ function App() {
             pointerEvents: 'none',
           }}
         >
-          <TileRenderer tiles={tiles} width={width} height={height} />
+          <TileRenderer tiles={tiles} width={width} height={height} seed={seed} />
         </div>
       </div>
 

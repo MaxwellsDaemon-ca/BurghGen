@@ -1,77 +1,93 @@
-import { useEffect, useRef } from 'react';
 import * as PIXI from 'pixi.js';
+import { useEffect, useRef } from 'react';
+import { getCornerTileIndex } from '../utils/getCornerTileIndex';
+import { getTileCoords } from '../utils/loadTileset';
 import type { TerrainTile } from '../types/TerrainTile';
-
-const TILE_SIZE = 16;
-
-/**
- * Maps terrain types to their respective fill colors.
- */
-const terrainColors: Record<string, number> = {
-  WATER: 0x3366cc,
-  SAND: 0xf4e285,
-  GRASS: 0x77dd77,
-  DIRT: 0xb97a57,
-};
+import { Assets } from 'pixi.js';
 
 interface Props {
-  /** Array of tiles to render on the map */
+  /** Flat array of terrain tiles to render */
   tiles: TerrainTile[];
+
   /** Width of the map in tiles */
   width: number;
+
   /** Height of the map in tiles */
   height: number;
+
+  /** Seed value used for procedural terrain variation */
+  seed: number;
 }
 
+// Constants for tile rendering
+const TILE_SIZE = 32;
+const TILE_COLUMNS = 16;
+const TILESET_IMAGE_PATH = '/assets/tilesets/BurghGen-Terrain-Tiles.png';
+
 /**
- * TileRenderer is a React component that renders a 2D grid of terrain tiles using PixiJS.
- * 
- * It creates and mounts a PixiJS application, draws colored rectangles based on terrain type,
- * and attaches the canvas to a container div. It automatically handles cleanup on unmount.
+ * TileRenderer component
+ *
+ * Uses PixiJS to render a 2D terrain tile map based on terrain data and a seeded corner tile algorithm.
  */
-const TileRenderer = ({ tiles, width, height }: Props) => {
-  const pixiContainer = useRef<HTMLDivElement>(null);
+const TileRenderer = ({ tiles, width, height, seed }: Props) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const appRef = useRef<PIXI.Application | null>(null);
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container || tiles.length === 0) return;
+
     // Initialize PixiJS application
     const app = new PIXI.Application({
       width: width * TILE_SIZE,
       height: height * TILE_SIZE,
-      backgroundColor: 0x2f2f2f,
-      antialias: true,
+      backgroundColor: 0x1e1e1e,
+      antialias: false,
     });
 
-    // Attach canvas to DOM
-    if (pixiContainer.current) {
-      pixiContainer.current.innerHTML = '';
-      const canvas = app.view as unknown as HTMLCanvasElement;
+    container.appendChild(app.view as HTMLCanvasElement);
+    appRef.current = app;
 
-      if (canvas instanceof HTMLCanvasElement) {
-        pixiContainer.current.appendChild(canvas);
+    // Convert flat tile list to a 2D array
+    const tileMap: TerrainTile[][] = [];
+    for (let y = 0; y < height; y++) {
+      const row: TerrainTile[] = [];
+      for (let x = 0; x < width; x++) {
+        row.push(tiles[y * width + x]);
       }
+      tileMap.push(row);
     }
 
-    // Draw each tile as a filled rectangle
-    tiles.forEach((tile) => {
-      const rect = new PIXI.Graphics();
-      rect.beginFill(terrainColors[tile.type]);
-      rect.drawRect(
-        tile.x * TILE_SIZE,
-        tile.y * TILE_SIZE,
-        TILE_SIZE,
-        TILE_SIZE
-      );
-      rect.endFill();
-      app.stage.addChild(rect);
+    // Load tileset texture and render visible tiles
+    Assets.load(TILESET_IMAGE_PATH).then((texture: PIXI.Texture) => {
+      const baseTexture = texture.baseTexture;
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const tileIndex = getCornerTileIndex(x, y, tileMap, seed);
+          if (tileIndex === -1) continue;
+
+          const { x: tx, y: ty } = getTileCoords(tileIndex, TILE_SIZE, TILE_SIZE, TILE_COLUMNS);
+          const frame = new PIXI.Rectangle(tx, ty, TILE_SIZE, TILE_SIZE);
+          const tileTexture = new PIXI.Texture(baseTexture, frame);
+
+          const sprite = new PIXI.Sprite(tileTexture);
+          sprite.x = x * TILE_SIZE;
+          sprite.y = y * TILE_SIZE;
+
+          app.stage.addChild(sprite);
+        }
+      }
     });
 
-    // Destroy PixiJS application on unmount
+    // Cleanup PixiJS resources on unmount or tile change
     return () => {
-      app.destroy(true, { children: true });
+      app.destroy(true, true);
+      appRef.current = null;
     };
-  }, [tiles, width, height]);
+  }, [tiles, width, height, seed]);
 
-  return <div ref={pixiContainer} />;
+  return <div ref={containerRef} style={{ marginTop: '1rem' }} />;
 };
 
 export default TileRenderer;
