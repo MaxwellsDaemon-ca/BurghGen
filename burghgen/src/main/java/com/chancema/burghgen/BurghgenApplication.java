@@ -37,7 +37,7 @@ public class BurghgenApplication {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173");
+                        .allowedOrigins("https://MaxwellsDaemon-ca.github.io", "https://MaxwellsDaemon-ca.github.io/BurghGen");
             }
         };
     }
