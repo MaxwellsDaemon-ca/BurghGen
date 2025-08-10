@@ -24,15 +24,12 @@ const TILE_SIZE = 32;
 const TERRAIN_TILE_COLUMNS = 16;
 const ROAD_TILE_COLUMNS = 32;
 
-const TERRAIN_TILESET_PATH = new URL(
-  'assets/tilesets/BurghGen-Terrain-Tiles.png',
-  import.meta.env.BASE_URL
-).toString();
+const BASE = import.meta.env.BASE_URL || '/'; // '/' in dev, '/BurghGen/' in prod
 
-const ROAD_TILESET_PATH = new URL(
-  'assets/tilesets/BurghGen-Road-Tiles.png',
-  import.meta.env.BASE_URL
-).toString();
+const TERRAIN_TILESET_PATH = `${BASE}assets/tilesets/BurghGen-Terrain-Tiles.png`;
+const ROAD_TILESET_PATH    = `${BASE}assets/tilesets/BurghGen-Road-Tiles.png`;
+
+
 
 
 /**
