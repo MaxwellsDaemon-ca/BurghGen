@@ -27,17 +27,30 @@ function App() {
   const TILE_SIZE = 32;
   const MIN_ZOOM = 0.25;
   const viewportRef = useRef<HTMLDivElement>(null);
+  const API_BASE = import.meta.env.VITE_API_BASE;
 
   /**
    * Fetches terrain data from the backend and updates tile state.
    */
   const fetchTiles = async () => {
-    const res = await fetch(
-      `http://localhost:8080/generate?type=${type}&seed=${seed}&width=${width}&height=${height}`
-    );
+    const url = new URL('/generate', API_BASE);
+    url.searchParams.set('type', String(type));
+    url.searchParams.set('seed', String(seed));
+    url.searchParams.set('width', String(width));
+    url.searchParams.set('height', String(height));
+
+    const res = await fetch(url.toString(), {
+      method: 'GET',
+    });
+
+    if (!res.ok) {
+      throw new Error(`Generation failed: ${res.status}`);
+    }
+
     const data = await res.json();
     setTiles(data);
   };
+
 
   // Initial map generation
   useEffect(() => {
