@@ -22,9 +22,18 @@ interface Props {
 // Constants for tile rendering
 const TILE_SIZE = 32;
 const TERRAIN_TILE_COLUMNS = 16;
-const TERRAIN_TILESET_PATH = '/assets/tilesets/BurghGen-Terrain-Tiles.png';
-const ROAD_TILESET_PATH = '/assets/tilesets/BurghGen-Road-Tiles.png';
 const ROAD_TILE_COLUMNS = 32;
+
+const TERRAIN_TILESET_PATH = new URL(
+  'assets/tilesets/BurghGen-Terrain-Tiles.png',
+  import.meta.env.BASE_URL
+).toString();
+
+const ROAD_TILESET_PATH = new URL(
+  'assets/tilesets/BurghGen-Road-Tiles.png',
+  import.meta.env.BASE_URL
+).toString();
+
 
 /**
  * TileRenderer component
