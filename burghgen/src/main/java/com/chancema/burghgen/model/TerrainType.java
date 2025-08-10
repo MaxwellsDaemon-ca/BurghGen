@@ -17,5 +17,8 @@ public enum TerrainType {
     GRASS,
 
     /** Represents dry earth, dirt paths, or cleared land */
-    DIRT
+    DIRT,
+
+    /** Represents pathways for the town */
+    ROAD
 }

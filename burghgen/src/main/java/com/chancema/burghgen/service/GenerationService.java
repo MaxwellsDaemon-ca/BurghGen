@@ -1,5 +1,7 @@
 package com.chancema.burghgen.service;
 
+import com.chancema.burghgen.generation.road.RoadGenerator;
+import com.chancema.burghgen.model.MapSize;
 import com.chancema.burghgen.model.TerrainTile;
 import com.chancema.burghgen.model.TerrainType;
 import com.chancema.burghgen.util.SimplexNoise;
@@ -14,7 +16,7 @@ import java.util.*;
  * and applies various land features using randomized algorithms with seed control.
  */
 @Service
-public class TerrainGenerationService {
+public class GenerationService {
 
     // List of coordinates representing water tiles that are adjacent to land.
     private final List<int[]> coastalWaterTiles = new ArrayList<>();
@@ -74,14 +76,26 @@ public class TerrainGenerationService {
             }
         }
 
+        TerrainTile[][] tileMap = new TerrainTile[width][height];
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                tileMap[x][y] = new TerrainTile(x, y, map[x][y]);
+            }
+        }
+
+
+        RoadGenerator.generateRoadNetwork(tileMap, width, height, seed, MapSize.fromDimensions(width, height), map, type);
+
+
 
         // Convert the raw map data to a list of TerrainTile objects for rendering
         List<TerrainTile> tiles = new ArrayList<>();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                tiles.add(new TerrainTile(x, y, map[y][x]));
+                tiles.add(tileMap[y][x]);
             }
         }
+
 
         return tiles;
     }
@@ -633,8 +647,6 @@ public class TerrainGenerationService {
         }
 
         if (!harborCreated[0] && rng.nextDouble() < 1.0 && harborTarget.direction != null) {
-            System.out.printf("Attempting to carve harbor in direction %s at axis %d with wave %.2f%n",
-                    harborTarget.direction, harborTarget.axis, harborTarget.wave);
             Optional<int[]> anchor = coastalSandTiles.stream()
                 .filter(tile -> switch (harborTarget.direction) {
                     case "TOP", "BOTTOM" -> tile[0] == harborTarget.wave; 

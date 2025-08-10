@@ -1,7 +1,7 @@
 package com.chancema.burghgen.controller;
 
 import com.chancema.burghgen.model.TerrainTile;
-import com.chancema.burghgen.service.TerrainGenerationService;
+import com.chancema.burghgen.service.GenerationService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +16,14 @@ import java.util.List;
 @RequestMapping("/generate")
 public class MapGenerationController {
 
-    private final TerrainGenerationService terrainService;
+    private final GenerationService terrainService;
 
     /**
      * Injects the terrain generation service.
      *
      * @param terrainService service used to procedurally generate terrain
      */
-    public MapGenerationController(TerrainGenerationService terrainService) {
+    public MapGenerationController(GenerationService terrainService) {
         this.terrainService = terrainService;
     }
 

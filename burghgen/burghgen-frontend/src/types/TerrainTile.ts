@@ -1,15 +1,18 @@
 /**
  * Defines the possible terrain types used in map generation.
- * 
- * These types map to visual styles and gameplay logic such as pathfinding,
- * tile properties, or generation rules.
  */
 export type TerrainType = 'WATER' | 'SAND' | 'GRASS' | 'DIRT';
 
 /**
+ * Optional road styles for road overlays.
+ */
+export type RoadStyle =
+  | 'COBBLE_GREY'
+  | 'COBBLE_LIGHTGREY'
+  | 'FIELDSTONE_TAN'; // Expand as needed
+
+/**
  * Represents a single tile in the terrain grid.
- * 
- * Each tile stores its grid coordinates and associated terrain type.
  */
 export interface TerrainTile {
   /** The horizontal position of the tile on the grid */
@@ -18,6 +21,15 @@ export interface TerrainTile {
   /** The vertical position of the tile on the grid */
   y: number;
 
-  /** The type of terrain this tile represents */
+  /** The base terrain type (grass, sand, etc.) */
   type: TerrainType;
+
+  /** Whether this tile has a road overlay */
+  hasRoad?: boolean;
+
+  /** The road style (optional, cosmetic only) */
+  roadStyle?: RoadStyle;
+
+  /** The tile ID from the road tileset to overlay */
+  roadTileId?: number;
 }

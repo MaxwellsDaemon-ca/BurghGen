@@ -11,6 +11,9 @@ public class TerrainTile {
     private int x;
     private int y;
     private TerrainType type;
+    private boolean hasRoad = false;
+    private RoadStyle roadStyle;
+    private int roadTileId;
 
     /**
      * Constructs a TerrainTile with a specified position and terrain type.
@@ -24,6 +27,28 @@ public class TerrainTile {
         this.y = y;
         this.type = type;
     }
+
+    
+    /**
+     * Constructs a TerrainTile with a specified position, terrain type, and road properties.
+     * 
+     * @param x the horizontal grid coordinate
+     * @param y the vertical grid coordinate
+     * @param type the terrain type for this tile
+     * @param hasRoad whether this tile has a road
+     * @param roadStyle the style of the road on this tile
+     * @param roadTileId the ID of the road tile used for rendering
+     */
+    public TerrainTile(int x, int y, TerrainType type, boolean hasRoad, RoadStyle roadStyle, int roadTileId) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.hasRoad = hasRoad;
+        this.roadStyle = roadStyle;
+        this.roadTileId = roadTileId;
+    }
+
+
 
     /**
      * Returns the X (horizontal) coordinate of the tile.
@@ -50,5 +75,33 @@ public class TerrainTile {
      */
     public TerrainType getType() {
         return type;
+    }
+
+    public void setType(TerrainType type) {
+        this.type = type;
+    }
+
+    public boolean getHasRoad() {
+        return hasRoad;
+    }
+
+    public void setHasRoad(boolean hasRoad) {
+        this.hasRoad = hasRoad;
+    }
+
+    public RoadStyle getRoadStyle() {
+        return roadStyle;
+    }
+
+    public void setRoadStyle(RoadStyle roadStyle) {
+        this.roadStyle = roadStyle;
+    }
+
+    public int getRoadTileId() {
+        return roadTileId;
+    }
+
+    public void setRoadTileId(int roadTileId) {
+        this.roadTileId = roadTileId;
     }
 }
